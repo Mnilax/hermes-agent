@@ -4,6 +4,7 @@
 Modes (pick one):
   --sheets     JSON inventory: sheet names, dimensions, row/col counts
   --json       dump one sheet's rows as a JSON array of arrays
+               Elapsed durations are rendered as timedelta text.
   --csv        dump one sheet as CSV to stdout or --out
   --formulas   JSON list of formula cells {"cell", "formula", "cached"}
   --notes      JSON list of cell notes/comments across sheets
@@ -31,12 +32,14 @@ import argparse
 import csv
 import json
 import sys
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 
 from openpyxl import load_workbook
 
 
 def jsonable(value):
+    if isinstance(value, timedelta):
+        return str(value)
     if isinstance(value, (datetime, date, time)):
         return value.isoformat()
     return value
